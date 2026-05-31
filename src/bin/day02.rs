@@ -1,9 +1,14 @@
 use advent_of_code_2025::read_input;
 
-fn is_mirrored(n: i64) -> bool {
+fn is_invalid(n: i64) -> bool {
     let s = n.to_string();
-    let mid = s.len() / 2;
-    s[..mid] == s[mid..]
+    let len = s.len();
+
+    (1..=len / 2)
+        // only try pattern lengths that divide evenly — others can never tile the full string
+        .filter(|&p| len.is_multiple_of(p))
+        // true if repeating the first `p` chars fills the entire string
+        .any(|p| s[..p].repeat(len / p) == s)
 }
 
 fn main() {
@@ -21,7 +26,7 @@ fn main() {
             let end: i64 = end.parse().unwrap();
             start..=end
         })
-        .filter(|&n| is_mirrored(n))
+        .filter(|&n| is_invalid(n))
         .sum();
 
     println!("Answer: {}", answer);
