@@ -34,10 +34,9 @@ impl Dial {
                 Direction::Left => self.nodes[self.position].prev,
                 Direction::Right => self.nodes[self.position].next,
             };
-        }
-
-        if self.position == 0 {
-            self.password += 1;
+            if self.position == 0 {
+                self.password += 1;
+            }
         }
     }
 }
