@@ -17,13 +17,11 @@ fn calculate_joltage(bank: &str) -> i64 {
 
     stack.truncate(12);
 
-    let joltage = stack
+    stack
         .iter()
         .enumerate()
         .map(|(index, b)| 10i64.pow(11 - (index as u32)) * b)
-        .sum();
-
-    joltage
+        .sum()
 }
 
 fn main() {
