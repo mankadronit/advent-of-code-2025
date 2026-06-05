@@ -23,15 +23,9 @@ fn get_neighbors(row: usize, col: usize, max_rows: usize, max_cols: usize) -> Ve
         .collect()
 }
 
-fn main() {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/bin/inputs/day04_input.txt");
+fn pick_rolls(wall: &mut Vec<Vec<char>>) -> i32 {
+    let mut rolls_picked = 0;
 
-    let content = read_to_string(path)
-        .expect("Error reading challenge input file. Please make sure it exists under the /inputs directory and is valid.");
-
-    let wall: Vec<Vec<char>> = content.lines().map(|l| l.chars().collect()).collect();
-
-    let mut num_rolls = 0;
     for r in 0..wall.len() {
         for c in 0..wall[0].len() {
             let neighbors = get_neighbors(r, c, wall.len(), wall[0].len());
@@ -41,10 +35,31 @@ fn main() {
                 .count();
 
             if wall[r][c] == '@' && num_neighbors < 4 {
-                num_rolls += 1;
+                rolls_picked += 1;
+                wall[r][c] = '.';
             }
         }
     }
 
-    println!("Answer: {num_rolls}");
+    rolls_picked
+}
+
+fn main() {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/bin/inputs/day04_input.txt");
+
+    let content = read_to_string(path)
+        .expect("Error reading challenge input file. Please make sure it exists under the /inputs directory and is valid.");
+
+    let mut wall: Vec<Vec<char>> = content.lines().map(|l| l.chars().collect()).collect();
+
+    let mut num_rolls = 0;
+
+    loop {
+        let picked = pick_rolls(&mut wall);
+        if picked == 0 {
+            break;
+        }
+        num_rolls += picked;
+    }
+    println!("{}", num_rolls)
 }
