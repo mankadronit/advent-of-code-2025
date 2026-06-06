@@ -24,16 +24,16 @@ fn main() {
 
         match op {
             "*" => {
-                answer += (problem[0..(problem.len() - 1)])
+                answer += problem[0..(problem.len() - 1)]
                     .iter()
                     .map(|v| v.parse::<i64>().unwrap())
-                    .fold(1, |acc, v| acc * v)
+                    .product::<i64>()
             }
             "+" => {
-                answer += (problem[0..(problem.len() - 1)])
+                answer += problem[0..(problem.len() - 1)]
                     .iter()
                     .map(|v| v.parse::<i64>().unwrap())
-                    .fold(0, |acc, v| acc + v)
+                    .sum::<i64>()
             }
             &_ => println!("Unknown operator"),
         }
