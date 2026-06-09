@@ -1,10 +1,10 @@
 use advent_of_code_2025::read_input;
-use std::{collections::HashSet, path::Path};
+use std::{collections::HashMap, path::Path};
 
 fn main() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/bin/inputs/day07_input.txt");
 
-    let content: Vec<Vec<i32>> = read_input(&path)
+    let content: Vec<Vec<i64>> = read_input(&path)
         .iter()
         .map(|line| {
             line.chars()
@@ -13,14 +13,12 @@ fn main() {
         })
         .collect();
 
-    let mut entry_points: HashSet<usize> = content[0]
+    let mut timelines: HashMap<usize, i64> = content[0]
         .iter()
         .enumerate()
         .filter(|&(_, v)| *v == 1)
-        .map(|(i, _)| i)
+        .map(|(i, _)| (i, 1i64))
         .collect();
-
-    let mut ans = 0;
 
     for row in &content[1..] {
         let row_indices: Vec<usize> = row
@@ -30,25 +28,25 @@ fn main() {
             .map(|(i, _)| i)
             .collect();
 
-        let overlaps: Vec<usize> = entry_points
+        let overlaps: Vec<(usize, i64)> = timelines
             .iter()
-            .filter(|i| row_indices.contains(i))
-            .copied()
+            .filter(|(i, _)| row_indices.contains(i))
+            .map(|(&i, &count)| (i, count))
             .collect();
 
-        ans += overlaps.len();
-
-        for i in overlaps {
+        for (i, count) in overlaps {
             if i > 0 {
-                entry_points.insert(i - 1);
+                *timelines.entry(i - 1).or_insert(0) += count;
             }
 
             if i < content[0].len() {
-                entry_points.insert(i + 1);
+                *timelines.entry(i + 1).or_insert(0) += count;
             }
-            entry_points.remove(&i);
+
+            timelines.remove(&i);
         }
     }
 
+    let ans: i64 = timelines.values().sum();
     println!("Answer: {}", ans);
 }
